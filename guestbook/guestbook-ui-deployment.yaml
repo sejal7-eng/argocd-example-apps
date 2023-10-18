@@ -14,7 +14,18 @@ spec:
         app: guestbook-ui
     spec:
       containers:
-      - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
-        name: guestbook-ui
-        ports:
-        - containerPort: 80
+      - name: myapp
+        image: alpine:latest
+        command: ['sh', '-c', 'echo "logging" > /opt/logs.txt']
+        volumeMounts:
+          - name: data
+            mountPath: /opt
+      - name: logshipper
+        image: alpine:latest
+        command: ['sh', '-c', 'tail /opt/logs.txt']
+        volumeMounts:
+          - name: data
+            mountPath: /opt
+  volumes:
+    - name: data
+      emptyDir: {}
